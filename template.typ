@@ -1,15 +1,25 @@
+#import "@preview/rubber-article:0.5.0": article
+
 #let project(title: "", abstract: [], team-number: "", problem-chosen: "", year: "", body) = {
-  // Set the document's basic properties.
+  // Set the document's basic properties
   set document(title: title)
-  set page(
-    margin: (left: 20mm, right: 20mm, top: 10mm, bottom: 20mm),
+  
+  // Set font to Libertinus Serif
+  set text(font: "Libertinus Serif", size: 12pt, lang: "en")
+  
+  // Apply rubber-article template with custom settings
+  show: article.with(
+    lang: "en",
+    page-margins: (left: 20mm, right: 20mm, top: 20mm, bottom: 15mm),
+    heading-numbering: "1.",
+    header-display: false,  // Disable default header, we'll use custom HiMCM header
+    page-numbering: "1 of 1",  // Use rubber-article's page numbering format
   )
   
-  set text(font: "Times New Roman", lang: "en", size: 12pt)
-
-  set heading(numbering: "1.")
-
-  // Team Infomation
+  // Custom HiMCM Summary Sheet title page
+  set page(margin: (left: 20mm, right: 20mm, top: 10mm, bottom: 20mm), header: none)
+  
+  // Team Information
   align(center)[
     #block(text("Team Control Number", size: 11pt))
     #block(text(
@@ -44,38 +54,33 @@
   
   line(length: 100%, stroke: gray)
 
-  // Title row.
+  // Title
   align(center)[
     #block(text(weight: 700, 1.75em, title), below: 20pt, above: 20pt)
   ]
   
-  // Main body.
+  // Abstract
   set par(justify: true)
-
   abstract
 
   pagebreak()
 
-  set text(font: "Times New Roman", lang: "en", size: 13pt)
+  // Table of contents
+  set text(size: 13pt)
+  outline(indent: auto)
 
-  outline(indent: true)
-
-  let page_counter = counter(page)
-  page_counter.update(0)
-
+  // Reset page counter for main content
+  counter(page).update(0)
+  
+  // Custom header for HiMCM format showing team number and page count
   set page(
-    header: box(stroke: (bottom: 1pt), inset: 5pt)[
-      #text("Team #")
-      #text(team-number)
+    margin: (left: 20mm, right: 20mm, top: 20mm, bottom: 15mm),
+    header: context box(stroke: (bottom: 1pt), inset: 5pt)[
+      Team \##team-number
       #h(1fr)
-      #text("Page")
-      #page_counter.display(
-        "1 of 1",
-        both: true,
-      )
+      Page #counter(page).display("1 of 1", both: true)
     ],
     header-ascent: 20%,
-    margin: (left: 20mm, right: 20mm, top: 20mm, bottom: 15mm),
   )
   
   body
